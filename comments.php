@@ -61,16 +61,17 @@ else
     else
     {
         $comment_sql = 'SELECT c.comment_id, c.patient_name, c.image, t.country, t.comment FROM comment AS c INNER JOIN comment_translate AS t ON t.comment_id = c.comment_id WHERE c.status = :status AND c.cat_id = :cat_id AND t.lang_id = :lang_id AND c.comment_id = :comment_id';
+        $where = array(
+            'cat_id' => $cat_id,
+            'status' => $status,
+            'lang_id' => $lang_id,
+            'comment_id' => $comment_id
+        );
     }
+
     $comment_sql_next = 'SELECT c.comment_id as next FROM comment AS c INNER JOIN comment_translate AS t ON t.comment_id = c.comment_id WHERE c.status = :status AND c.cat_id = :cat_id AND c.comment_id = (SELECT MIN(comment_id) FROM comment WHERE comment_id > :comment_id AND t.lang_id = :lang_id) AND t.lang_id = :lang_id';
 
     $comment_sql_prev = 'SELECT c.comment_id as prev FROM comment AS c INNER JOIN comment_translate AS t ON t.comment_id = c.comment_id WHERE c.status = :status AND c.cat_id = :cat_id AND c.comment_id = (SELECT MAX(comment_id) FROM comment WHERE comment_id < :comment_id AND t.lang_id = :lang_id) AND t.lang_id = :lang_id';
-    $where = array(
-        'cat_id' => $cat_id,
-        'status' => $status,
-        'lang_id' => $lang_id,
-        'comment_id' => $comment_id
-    );
 }
 
 try {
